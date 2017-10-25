@@ -4,6 +4,8 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+index-citi.html
+manifest-dev.yml
 
 # Runtime data
 pids
