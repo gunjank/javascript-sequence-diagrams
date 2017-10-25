@@ -1,4 +1,4 @@
 # javascript-sequence-diagrams
 
-How to use :
+Demo Link :
 https://gunjank.github.io/javascript-sequence-diagrams/
