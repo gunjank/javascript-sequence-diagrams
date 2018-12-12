@@ -30,28 +30,31 @@
   <body>
     <header>
       <div class="inner">
-        <h1>sequence-diagrams</h1>       
-        <h2>Turns text into UML sequence diagrams</h2>        
+        <h1>Sequence Diagrams</h1>       
+        <h2>Turns text into UML sequence diagrams <button><a href="demo.html" class="download">Demo</a></button> </h2>  
+        
       </div>     
     </header>
     <div id="main">
       <section id="demo">
         <table align="center" class="inner">
           <tbody><tr>
+              <h3> Try editing me below</h3>
             <td>
-            <h3>Demo. Try editing me below</h3>
-            <div class="editor-wrapper">
-                <div class="editor">Andrew->China: Says Hello
-Note right of China: China thinks\nabout it
-China-->Andrew: How are you?
-Andrew->>China: I am good thanks!</div>
-              </div>
+            
+                <div class="editor-wrapper">
+                    <div class="editor">Gunjan->Rahul: Says Hello
+Note right of Rahul: Rahul thinks\nabout it
+Rahul-->Gunjan: How are you?
+Ravi->>Rahul: I am good thanks!</div>
+                  </div>
               Theme:
               <select class="theme">
                 <option value="simple">Simple</option>
                 <option value="hand" selected>Hand drawn</option>
               </select>
               | <a href="#" class="download">Download as SVG</a>
+                <a href="#" class="downloadpng">Download as PNG</a>
               </td>
               <td class="diagram">This should be a diagram! If you don't see it you need Javascript enabled</td>
             </tr>
@@ -59,79 +62,6 @@ Andrew->>China: I am good thanks!</div>
   
         </section>
 
-        <div class="inner">
-            <section id="examples">
-              <h3>Examples</h3>
-              <table>
-      
-                <tr id="example1">
-                  <td class="diagram"></td>
-                  <td>
-                    <div class="editor-wrapper">
-                      <div class="editor">Title: Here is a title
-A->B: Normal line
-B-->C: Dashed line
-C->>D: Open arrow
-D-->>A: Dashed open arrow</div>
-                    </div>
-                    Theme:
-                    <select class="theme">
-                      <option value="simple">Simple</option>
-                      <option value="hand" selected>Hand drawn</option>
-                    </select>
-                    | <a href="#" class="download">Download as SVG</a>
-                  </td>
-                </tr>
-      
-                <tr id="example2">
-                  <td class="diagram"></td>
-                  <td>
-                    <div class="editor-wrapper">
-                      <div class="editor"># Example of a comment.
-Note left of A: Note to the\n left of A
-Note right of A: Note to the\n right of A
-Note over A: Note over A
-Note over A,B: Note over both A and B</div>
-                    </div>
-                    Theme:
-                    <select class="theme">
-                      <option value="simple">Simple</option>
-                      <option value="hand" selected>Hand drawn</option>
-                    </select>
-                    | <a href="#" class="download">Download as SVG</a>
-                  </td>
-                </tr>
-      
-                <tr id="example3">
-                  <td class="diagram"></td>
-                  <td>
-                    <div class="editor-wrapper">
-                      <div class="editor">participant C
-participant B
-participant A
-Note right of A: By listing the participants\n you can change their order</div>
-                    </div>
-                    Theme:
-                    <select class="theme">
-                      <option value="simple">Simple</option>
-                      <option value="hand" selected>Hand drawn</option>
-                    </select>
-                    | <a href="#" class="download">Download as SVG</a>
-                  </td>
-                </tr>
-      
-              </table>
-            </section>
-
-
-            </div>
-      
-          <footer>
-            <hr />
-            <div class="inner">
-             
-            </div>
-          </footer>
 
       
           <!-- Needed for the text editor -->
@@ -152,6 +82,7 @@ Note right of A: By listing the participants\n you can change their order</div>
         var diagram_div = div.find(".diagram");
         var theme_div = div.find(".theme");
         var download_link = div.find('.download');
+        var download_link_png = div.find('.downloadpng');
 
         // Setup the editor diagram
         var editor = ace.edit(editor_div.get(0));
@@ -160,16 +91,50 @@ Note right of A: By listing the participants\n you can change their order</div>
         editor.getSession().on('change', _.debounce(on_change, 100));
 
         download_link.click(function(ev) {
+          // var svg = diagram_div.find('svg')[0];
+          // var width = parseInt(svg.width.baseVal.value);
+          // var height = parseInt(svg.height.baseVal.value);
+          // var data = editor.getValue();
+          // var xml = '<?xml version="1.0" encoding="utf-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"><svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" xmlns:xlink="http://www.w3.org/1999/xlink"><source><![CDATA[' + data + ']]></source>' + svg.innerHTML + '</svg>';
+
+          // var a = $(this);
+          // a.attr("download", "diagram.svg"); // TODO I could put title here
+          // a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
+          createAndDownloadImage($(this),"svg");
+        });
+
+        download_link_png.click(function(ev) {
+          createAndDownloadImage($(this),"png");
+        });
+
+        var createAndDownloadImage = function (a,type) {
           var svg = diagram_div.find('svg')[0];
           var width = parseInt(svg.width.baseVal.value);
           var height = parseInt(svg.height.baseVal.value);
           var data = editor.getValue();
           var xml = '<?xml version="1.0" encoding="utf-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"><svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" xmlns:xlink="http://www.w3.org/1999/xlink"><source><![CDATA[' + data + ']]></source>' + svg.innerHTML + '</svg>';
-
-          var a = $(this);
-          a.attr("download", "diagram.svg"); // TODO I could put title here
-          a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
-        });
+          
+          if(type==="svg"){
+            a.attr("download", "diagram"+Math.round(Math.random()*1000)+".svg"); 
+            a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
+          }else if(type==="png"){
+            var canvas = document.createElement( "canvas" );
+            canvas.setAttribute("height", height);
+            canvas.setAttribute("width", width);
+            var ctx = canvas.getContext( "2d" );
+            var img = document.createElement( "img" );
+            img.onload = function() {
+                ctx.fillStyle = "blue";
+                ctx.fill();
+                ctx.drawImage( img, 0, 0 );
+                var l = document.createElement( "a" );
+                l.setAttribute("download", "diagram"+Math.round(Math.random()*1000)+".png");
+                l.setAttribute("href", canvas.toDataURL( "image/png" ).replace("image/png", "image/octet-stream"));
+                l.click();
+            };
+            img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( xml ) );
+          }
+        };
 
         theme_div.change(on_change);
         on_change();
@@ -221,4 +186,7 @@ Note right of A: By listing the participants\n you can change their order</div>
     </script>
   
 
-</div></body></html>
+</div>
+</body>
+
+</html>

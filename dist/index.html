@@ -54,6 +54,7 @@ Ravi->>Rahul: I am good thanks!</div>
                 <option value="hand" selected>Hand drawn</option>
               </select>
               | <a href="#" class="download">Download as SVG</a>
+                <a href="#" class="downloadpng">Download as PNG</a>
               </td>
               <td class="diagram">This should be a diagram! If you don't see it you need Javascript enabled</td>
             </tr>
@@ -81,6 +82,7 @@ Ravi->>Rahul: I am good thanks!</div>
         var diagram_div = div.find(".diagram");
         var theme_div = div.find(".theme");
         var download_link = div.find('.download');
+        var download_link_png = div.find('.downloadpng');
 
         // Setup the editor diagram
         var editor = ace.edit(editor_div.get(0));
@@ -89,16 +91,50 @@ Ravi->>Rahul: I am good thanks!</div>
         editor.getSession().on('change', _.debounce(on_change, 100));
 
         download_link.click(function(ev) {
+          // var svg = diagram_div.find('svg')[0];
+          // var width = parseInt(svg.width.baseVal.value);
+          // var height = parseInt(svg.height.baseVal.value);
+          // var data = editor.getValue();
+          // var xml = '<?xml version="1.0" encoding="utf-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"><svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" xmlns:xlink="http://www.w3.org/1999/xlink"><source><![CDATA[' + data + ']]></source>' + svg.innerHTML + '</svg>';
+
+          // var a = $(this);
+          // a.attr("download", "diagram.svg"); // TODO I could put title here
+          // a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
+          createAndDownloadImage($(this),"svg");
+        });
+
+        download_link_png.click(function(ev) {
+          createAndDownloadImage($(this),"png");
+        });
+
+        var createAndDownloadImage = function (a,type) {
           var svg = diagram_div.find('svg')[0];
           var width = parseInt(svg.width.baseVal.value);
           var height = parseInt(svg.height.baseVal.value);
           var data = editor.getValue();
           var xml = '<?xml version="1.0" encoding="utf-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"><svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '" xmlns:xlink="http://www.w3.org/1999/xlink"><source><![CDATA[' + data + ']]></source>' + svg.innerHTML + '</svg>';
-
-          var a = $(this);
-          a.attr("download", "diagram.svg"); // TODO I could put title here
-          a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
-        });
+          
+          if(type==="svg"){
+            a.attr("download", "diagram"+Math.round(Math.random()*1000)+".svg"); 
+            a.attr("href", "data:image/svg+xml," + encodeURIComponent(xml));
+          }else if(type==="png"){
+            var canvas = document.createElement( "canvas" );
+            canvas.setAttribute("height", height);
+            canvas.setAttribute("width", width);
+            var ctx = canvas.getContext( "2d" );
+            var img = document.createElement( "img" );
+            img.onload = function() {
+                ctx.fillStyle = "blue";
+                ctx.fill();
+                ctx.drawImage( img, 0, 0 );
+                var l = document.createElement( "a" );
+                l.setAttribute("download", "diagram"+Math.round(Math.random()*1000)+".png");
+                l.setAttribute("href", canvas.toDataURL( "image/png" ).replace("image/png", "image/octet-stream"));
+                l.click();
+            };
+            img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( xml ) );
+          }
+        };
 
         theme_div.change(on_change);
         on_change();
